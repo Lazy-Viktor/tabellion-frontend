@@ -1,0 +1,30 @@
+<div class="user-form">
+    <h2>Додати нового користувача</h2>
+    
+    <form (ngSubmit)="addUser()">
+      <label for="name">Ім'я:</label>
+      <input id="name" [(ngModel)]="user.name" name="name" required>
+  
+      <label for="practice">Вид діяльності:</label>
+      <input id="practice" [(ngModel)]="user.practice" name="practice" required>
+  
+      <label for="address">Адреса:</label>
+      <input id="address" [(ngModel)]="user.address" name="address" required>
+  
+      <label for="phone">Телефон:</label>
+      <input id="phone" type="tel" [(ngModel)]="user.phone" name="phone"
+             (input)="formatPhone()" pattern="\+380\s\(\d{2}\)\s\d{3}\s\d{2}\s\d{2}" required
+             placeholder="+380 (XX) XXX XX XX">
+      
+      <button type="submit">Додати клієнта</button>
+    </form>
+  
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+    
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+  </div>
+  

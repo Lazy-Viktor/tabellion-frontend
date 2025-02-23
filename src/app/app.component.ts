@@ -1,12 +1,18 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterLink, RouterModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'tbfrontend';
+  currentView: 'users' | 'create-contract' | 'contracts' = 'users';
+
+  setView(view: 'users' | 'create-contract' | 'contracts') {
+    this.currentView = view;
+  }
 }
+

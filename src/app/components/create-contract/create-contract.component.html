@@ -1,0 +1,33 @@
+<div class="contract-form">
+    <h2>Створити угоду</h2>
+  
+    <label for="client">Виберіть клієнта:</label>
+    <select id="client" [(ngModel)]="selectedClientId" name="client">
+      @for (user of users; track user._id) {
+        <option [value]="user._id">
+          {{ user.name }} / {{ user.phone }}
+        </option>
+      }
+    </select>
+  
+    <h3>Оберіть послуги:</h3>
+    <div class="services-list">
+      @for (service of services; track service._id) {
+        <div class="service-item">
+          <p><strong>{{ service.name }}</strong></p>
+          <p>{{ service.description }}</p>
+          <div class="service-actions">
+            <span>Ціна послуги: {{ service.price }} грн</span>
+            <button (click)="toggleService(service)">
+              {{ contract.services.includes(service.name) ? 'Відмінити' : 'Вибрати' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  
+    <p><strong>Сумарна ціна:</strong> {{ contract.totalprice }} грн</p>
+  
+    <button (click)="createContract()">Створити угоду</button>
+  </div>
+  
