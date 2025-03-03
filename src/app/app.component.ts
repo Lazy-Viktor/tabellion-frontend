@@ -9,10 +9,19 @@ import { RouterLink, RouterModule } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  currentView: 'users' | 'create-contract' | 'contracts' = 'users';
+  user: any = null;
 
-  setView(view: 'users' | 'create-contract' | 'contracts') {
-    this.currentView = view;
+  constructor() {}
+
+  ngOnInit() {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        this.user = JSON.parse(storedUser);
+      } catch (error) {
+        console.error('Помилка парсингу user з localStorage:', error);
+        this.user = null;
+      }
+    }
   }
 }
-

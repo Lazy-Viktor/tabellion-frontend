@@ -1,62 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { BindCompanyComponent } from "./bind-company/bind-company.component";
+
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  isAdmin: boolean;
+  hasCompany: boolean;
+}
 
 @Component({
-  selector: 'app-users',
-  imports: [FormsModule],
+  selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrl: './user.component.css'
+  styleUrls: ['./user.component.css'],
+  imports: [BindCompanyComponent]
 })
-export class UsersComponent {
-  user = { name: '', practice: '', address: '', phone: '' };
-  errorMessage = '';
-  successMessage = '';
-  users: any[] = [];
+export class UserComponent implements OnInit {
+  showBindCompany = false;
+  user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  constructor(private http: HttpClient) {
-    this.loadUsers();
-  }
+  constructor(private http: HttpClient, private router: Router) {}
 
-  formatPhone() {
-    let raw = this.user.phone.replace(/\D/g, '');
-    if (raw.startsWith('380')) raw = raw.slice(3);
-    if (raw.length > 9) raw = raw.slice(0, 9);
+  ngOnInit() {
+    const token = localStorage.getItem('token');
 
-    let formatted = `+380 `;
-    if (raw.length > 2) formatted += `(${raw.slice(0, 2)}) `;
-    if (raw.length > 5) formatted += `${raw.slice(2, 5)} `;
-    if (raw.length > 7) formatted += `${raw.slice(5, 7)} `;
-    if (raw.length > 9) formatted += `${raw.slice(7, 9)}`;
+    if (!token) {
+      this.router.navigate(['/user/registration']);
+      return;
+    }
 
-    this.user.phone = formatted.trim();
-  }
-
-  loadUsers() {
-    this.http.get<any[]>('http://localhost:5000/users').subscribe(users => {
-      this.users = users;
+    this.http.get<User>('http://localhost:5000/auth/profile', {
+      headers: { Authorization: `Bearer ${token}` }
+    }).subscribe({
+      next: (data) => {
+        this.user = data;
+      },
+      error: () => {
+        localStorage.removeItem('token');
+        this.router.navigate(['/user/registration']);
+      }
     });
   }
 
-  addUser() {
-    this.errorMessage = '';
-    this.successMessage = '';
-
-    const exists = this.users.some(u => 
-      u.name === this.user.name &&
-      u.practice === this.user.practice &&
-      u.address === this.user.address &&
-      u.phone === this.user.phone
-    );
-
-    if (exists) {
-      this.errorMessage = 'Клієнт вже присутній в базі даних';
-    } else {
-      this.http.post('http://localhost:5000/users', this.user).subscribe(() => {
-        this.successMessage = 'Клієнта успішно додано!';
-        this.user = { name: '', practice: '', address: '', phone: '' };
-        this.loadUsers();
-      });
-    }
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.user = null;
+    this.router.navigate(['/user/registration']);
   }
 }

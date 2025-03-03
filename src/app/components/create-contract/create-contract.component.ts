@@ -2,26 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
-interface User {
+interface Client {
   _id: string;
   name: string;
   phone: string;
-}
+  userID: string;
+};
 
 interface Service {
   _id: string;
   name: string;
   description: string;
   price: number;
-}
+};
 
 interface Contract {
+  clientId: string;
   client: string;
   services: string[];
   totalprice: number;
   fee: number;
   description: string;
-}
+};
 
 @Component({
   selector: 'app-create-contract',
@@ -30,29 +32,51 @@ interface Contract {
   styleUrls: ['./create-contract.component.css']
 })
 export class CreateContractComponent implements OnInit {
-  users: User[] = [];
+  user: any = {};
+  userClients: any[] = [];
+  clients: Client[] = [];
   services: Service[] = [];
   selectedClientId: string = '';
   contract: Contract = {
+    clientId: '',
     client: '',
     services: [],
     totalprice: 0,
     fee: 0,
     description: ''
-  };
+};
 
-  constructor(private http: HttpClient) {}
+constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.loadUsers();
+    this.loadUserAndClients();
     this.loadServices();
   }
 
-  loadUsers() {
-    this.http.get<User[]>('http://localhost:5000/users').subscribe((data) => {
-      this.users = data;
+  loadUserAndClients() {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      this.user = JSON.parse(storedUser);
+    }
+
+    this.http.get<Client[]>('http://localhost:5000/clients').subscribe(clients => {
+      this.clients = clients;
+      
+      this.filterUserClients();
     });
   }
+
+  filterUserClients() {
+    if (this.user && this.user.id) {
+      const userId = this.user.id.toString();
+  
+      this.userClients = this.clients.filter(client => {
+        return client.userID?.toString() === userId;
+      });
+  
+    }
+  }
+  
 
   loadServices() {
     this.http.get<Service[]>('http://localhost:5000/services').subscribe((data) => {
@@ -74,9 +98,11 @@ export class CreateContractComponent implements OnInit {
 
   updateContractDetails() {
     this.contract.fee = this.contract.totalprice * 0.3;
-    const selectedUser = this.users.find(user => user._id === this.selectedClientId);
-    if (selectedUser) {
-      this.contract.description = `Клієнт ${selectedUser.name} уклав угоду з наступних послуг: ${this.contract.services.join(', ')}, за які він заплатив ${this.contract.totalprice} грн.`;
+    const selectedClient = this.clients.find(client => client._id === this.selectedClientId);
+    if (selectedClient) {
+      this.contract.clientId = selectedClient._id;
+      this.contract.client = selectedClient.name;
+      this.contract.description = `Клієнт ${selectedClient.name} уклав угоду з наступних послуг: ${this.contract.services.join(', ')}, за які він заплатив ${this.contract.totalprice} грн.`;
     }
   }
 
@@ -90,19 +116,20 @@ export class CreateContractComponent implements OnInit {
       return;
     }
 
-    this.contract.client = this.selectedClientId;
-    this.updateContractDetails(); // Переконуємося, що всі значення оновлені
+    this.updateContractDetails();
 
     this.http.post('http://localhost:5000/contracts', this.contract).subscribe(() => {
       alert('Угоду успішно створено');
       this.contract = {
+        clientId: '',
         client: '',
         services: [],
         totalprice: 0,
         fee: 0,
         description: ''
       };
-      this.selectedClientId = '';
+    this.selectedClientId = '';
     });
   }
 }
+

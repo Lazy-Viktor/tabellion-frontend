@@ -1,30 +1,23 @@
-<div class="user-form">
-    <h2>Додати нового користувача</h2>
-    
-    <form (ngSubmit)="addUser()">
-      <label for="name">Ім'я:</label>
-      <input id="name" [(ngModel)]="user.name" name="name" required>
+@if (user) {
+  <div class="user-profile">
+    <h2>Вітаємо, {{ user.name }}</h2>
+    <p>Email: {{ user.email }}</p>
   
-      <label for="practice">Вид діяльності:</label>
-      <input id="practice" [(ngModel)]="user.practice" name="practice" required>
-  
-      <label for="address">Адреса:</label>
-      <input id="address" [(ngModel)]="user.address" name="address" required>
-  
-      <label for="phone">Телефон:</label>
-      <input id="phone" type="tel" [(ngModel)]="user.phone" name="phone"
-             (input)="formatPhone()" pattern="\+380\s\(\d{2}\)\s\d{3}\s\d{2}\s\d{2}" required
-             placeholder="+380 (XX) XXX XX XX">
-      
-      <button type="submit">Додати клієнта</button>
-    </form>
-  
-    @if (errorMessage) {
-      <p class="error">{{ errorMessage }}</p>
+    @if (!user?.isAdmin) {
+      @if (user?.hasCompany) {
+        <p>Є прив'язана компанія</p>
+      } @else {
+        <button (click)="showBindCompany = true">Прив'язати компанію</button>
+    }
     }
     
-    @if (successMessage) {
-      <p class="success">{{ successMessage }}</p>
-    }
   </div>
-  
+
+  @if (showBindCompany) {
+    <app-bind-company></app-bind-company>
+  }
+
+  <button (click)="logout()">Вийти</button>
+} @else {
+  <p>Перенаправлення на сторінку входу...</p>
+}

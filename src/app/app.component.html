@@ -1,14 +1,16 @@
 <header>
-    <h1>TABELLION</h1>
-    <nav>
-      <button routerLink="/add-user">Додати Клієнта</button>
-      <button routerLink="/create-contract">Скласти Угоду</button>
-      <button routerLink="/view-contracts">Переглянути Угоди</button>
-    </nav>
-  </header>
-  
-  <main>
-    <router-outlet></router-outlet> <!-- Тут відображатимуться компоненти -->
-  </main>
-  
-  
+  <h1>TABELLION</h1>
+  <nav>
+    <button routerLink = "/user">На головну</button>
+    @if (user?.isAdmin === false) {
+      <button routerLink = "/create-contract">Скласти Угоду</button>
+    }
+    @if (user?.isAdmin === true) {
+      <button routerLink = "/listing">Для адміністраторів</button>
+    }
+  </nav>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
