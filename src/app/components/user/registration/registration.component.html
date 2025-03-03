@@ -1,0 +1,38 @@
+<div class="container">
+    <h2>@if (isLoginMode) { Вхід } @else { Реєстрація }</h2>
+
+    <button (click)="toggleMode()">
+      @if (isLoginMode) { Перейти до реєстрації } @else { Перейти до входу }
+    </button>
+
+    <form (submit)="isLoginMode ? login() : register()">
+      @if (!isLoginMode) {
+        <label for="name">Ім'я</label><br />
+        <input type="text" id="name" [(ngModel)]="registerData.name" name="name" required><br />
+      }
+  
+      <label for="email">Email</label><br />
+      @if (isLoginMode) {
+        <input type="email" id="email" [(ngModel)]="loginData.email" name="email" required><br />
+      } @else {
+        <input type="email" id="email" [(ngModel)]="registerData.email" name="email" required><br />
+      }
+
+  
+      <label for="password">Пароль</label><br />
+      @if (isLoginMode) {
+        <input type="password" id="password" [(ngModel)]="loginData.password" name="password" required><br />
+      } @else {
+        <input type="password" id="password" [(ngModel)]="registerData.password" name="password" required><br />
+      }
+
+  
+      <button type="submit">@if (isLoginMode) { Увійти } @else { Зареєструватися }</button><br />
+    </form>
+
+    @if (errorMessage) {
+      <p  class="error">{{ errorMessage }}</p>
+    }
+    
+  </div>
+  

@@ -1,0 +1,24 @@
+<h2>Список клієнтів</h2>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Ім'я представника</th>
+      <th>Назва компанії</th>
+      <th>Вид діяльності</th>
+      <th>Адреса</th>
+      <th>Телефон</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (client of clients; track client) {
+      <tr>
+        <td>{{ getUserName(client.userID) }}</td>
+        <td>{{ client.name }}</td>
+        <td>{{ client.practice }}</td>
+        <td>{{ client.address }}</td>
+        <td>{{ client.phone }}</td>
+      </tr>
+    }
+  </tbody>
+</table>

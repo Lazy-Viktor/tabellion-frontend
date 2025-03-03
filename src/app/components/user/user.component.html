@@ -1,0 +1,23 @@
+@if (user) {
+  <div class="user-profile">
+    <h2>Вітаємо, {{ user.name }}</h2>
+    <p>Email: {{ user.email }}</p>
+  
+    @if (!user?.isAdmin) {
+      @if (user?.hasCompany) {
+        <p>Є прив'язана компанія</p>
+      } @else {
+        <button (click)="showBindCompany = true">Прив'язати компанію</button>
+    }
+    }
+    
+  </div>
+
+  @if (showBindCompany) {
+    <app-bind-company></app-bind-company>
+  }
+
+  <button (click)="logout()">Вийти</button>
+} @else {
+  <p>Перенаправлення на сторінку входу...</p>
+}

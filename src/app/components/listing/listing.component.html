@@ -1,0 +1,14 @@
+<h2>Панель адміністратора</h2>
+
+<div>
+  <button (click)="activeComponent = 'clients'">Список Клієнтів</button>
+  <button (click)="activeComponent = 'contracts'">Список Угод</button>
+</div>
+
+<div>
+  @if (activeComponent === 'clients') {
+    <app-clients></app-clients>
+  } @else if (activeComponent === 'contracts') {
+    <app-contracts></app-contracts>
+  }
+</div>

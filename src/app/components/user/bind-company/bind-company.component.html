@@ -1,0 +1,33 @@
+<div class="user-form">
+    <h2>Додати нового користувача</h2>
+    
+    <form (ngSubmit)="addClient()">
+      <label for="name">Назва компанії:</label><br />
+      <input id="name" [(ngModel)]="client.name" name="name" required><br />
+  
+      <label for="practice">Вид діяльності:</label><br />
+      <select id="practice" [(ngModel)]="client.practice" name="practice" required>
+        @for (option of practices; track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select><br />
+  
+      <label for="address">Адреса:</label><br />
+      <input id="address" [(ngModel)]="client.address" name="address" required><br />
+  
+      <label for="phone">Телефон:</label><br />
+      <input id="phone" type="tel" [(ngModel)]="client.phone" name="phone"
+             pattern="\+380\s\(\d{2}\)\s\d{3}\s\d{2}\s\d{2}" required
+             placeholder="+380 (XX) XXX XX XX"><br />
+      
+      <button type="submit">Додати клієнта</button>
+    </form>
+  
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+    
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+  </div>

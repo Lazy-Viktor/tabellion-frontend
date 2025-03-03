@@ -1,0 +1,22 @@
+<h2>Список угод</h2>
+
+<table border="1">
+    <thead>
+      <tr>
+        <th>Клієнт</th>
+        <th>Опис угоди</th>
+        <th>Ціна (грн)</th>
+        <th>Комісійні (грн)</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (contract of contracts; track contract._id) {
+        <tr>
+          <td>{{ contract.client }}</td>
+          <td>{{ contract.description }}</td>
+          <td>{{ contract.totalprice }}</td>
+          <td>{{ contract.fee }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
